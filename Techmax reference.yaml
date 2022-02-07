@@ -1,0 +1,35 @@
+---
+Resources:
+  WebServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access on ports 80 and 22
+      GroupName: 
+      SecurityGroupIngress:
+        - IpProtocol:
+          FromPort:
+          ToPort:
+          CidrIp:
+        - IpProtocol:
+          FromPort:
+          ToPort:
+          CidrIp:
+      Tags:
+        - Key:
+          Value:
+      VpcId:
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+      SubnetId:
+      SecurityGroupIds:
+      KeyName:
+      ImageId:
+      Tags:
+        - Key:
+          Value:
+      UserData:
+        Fn::Base64:
+          !Sub |

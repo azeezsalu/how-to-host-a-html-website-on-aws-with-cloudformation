@@ -1,0 +1,47 @@
+---
+Resources:
+  WebServerSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access on ports 80 and 22
+      GroupName: MyWebServer SG
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 108.48.102.126/32
+      Tags:
+        - Key: Name
+          Value: MyWebServer SG
+      VpcId: vpc-01dbbab3440320be5
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SubnetId: subnet-0cd3ca69048641381
+      SecurityGroupIds:
+        - !Ref WebServerSG
+      KeyName: webkey
+      ImageId: ami-08e4e35cccc6189f4 
+      Tags:
+        - Key: Name
+          Value: MyWebServer
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            sudo su
+            yum update -y
+            yum install -y httpd
+            cd /var/www/html
+            wget https://github.com/azeezsalu/techmax/archive/refs/heads/main.zip
+            unzip main.zip
+            cp -r techmax-main/* /var/www/html/
+            rm -rf techmax-main main.zip
+            systemctl enable httpd 
+            systemctl start httpd
